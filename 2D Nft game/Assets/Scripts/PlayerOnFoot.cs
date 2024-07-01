@@ -173,6 +173,11 @@ public class PlayerOnFoot : MonoBehaviour
             collision.gameObject.SetActive(false);
             GameManager.Instance.PlaySound("EatFruit");
         }
+
+        else if (collision.CompareTag("LevelEnd")) 
+        {
+            levelController.LevelComplete();
+        }
     }
 
 

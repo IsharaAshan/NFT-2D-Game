@@ -11,6 +11,7 @@ TagManager:
   - Meat
   - FxTemporaire
   - Fruits
+  - LevelEnd
   layers:
   - Default
   - TransparentFX
