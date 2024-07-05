@@ -177,6 +177,7 @@ public class PlayerOnFoot : MonoBehaviour
         else if (collision.CompareTag("LevelEnd")) 
         {
             levelController.LevelComplete();
+            canMove = false;
         }
     }
 
