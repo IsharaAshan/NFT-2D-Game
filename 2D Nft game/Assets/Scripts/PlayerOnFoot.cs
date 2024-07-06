@@ -29,6 +29,8 @@ public class PlayerOnFoot : MonoBehaviour
 
     [SerializeField] GameObject[] activeSkin;
 
+
+    [SerializeField]short jumpValue;
     public enum PlayerMode 
     {
         OnFoot,
@@ -103,10 +105,25 @@ public class PlayerOnFoot : MonoBehaviour
                     animator.SetBool("isJumping", !isGrounded);
                 }
 
-                if (canMove && isGrounded && Input.GetButtonDown("Jump"))
+                if (Input.GetButtonDown("Jump"))
                 {
-                    Jump();
+
+                    if (canMove && isGrounded)
+                    {
+                        jumpValue = 0;
+                        Jump();
+                        jumpValue++;
+                    }
+                    else
+                    {
+                        if (!isGrounded && jumpValue == 1)
+                        {
+                            Jump();
+                            jumpValue = 0;
+                        }
+                    }
                 }
+
 
                 ; break;
 
@@ -133,6 +150,8 @@ public class PlayerOnFoot : MonoBehaviour
 
     private void Jump()
     {
+       
+
         // Apply a vertical force to the player to make them jump
         if (playerMode == PlayerMode.OnFoot)
         {
@@ -140,6 +159,9 @@ public class PlayerOnFoot : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             GameManager.Instance.PlaySound("Jump");
         }
+
+
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -278,7 +300,7 @@ public class PlayerOnFoot : MonoBehaviour
 
     private void ActiveMeetPowerUp() 
     {
-        transform.GetChild(0).localScale = new Vector3(.35f, .35f, .35f);
+        transform.GetChild(0).localScale = new Vector3(.23f, .23f, .23f);
         StartCoroutine(DeactiveMeetPowerUp());
     }
 
@@ -286,7 +308,7 @@ public class PlayerOnFoot : MonoBehaviour
     {
         moveSpeed *= 2;
         yield return new WaitForSeconds(5);
-        transform.GetChild(0).localScale = new Vector3(.25f, .25f, .25f);
+        transform.GetChild(0).localScale = new Vector3(.18f, .18f, .18f);
         moveSpeed /= 2;
         isPowerOn = false;
         hitValue = 3;
