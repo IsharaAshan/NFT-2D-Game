@@ -31,6 +31,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "84130df8-98b0-49c2-af13-610c1a1e1cfc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -86,6 +95,17 @@
                     "processors": "",
                     "groups": "Keyboard",
                     "action": "ThrowFruit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d471d23c-bf75-46c2-91db-4932bc30d5a5",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

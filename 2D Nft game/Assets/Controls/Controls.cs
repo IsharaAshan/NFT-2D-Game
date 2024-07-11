@@ -53,6 +53,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""84130df8-98b0-49c2-af13-610c1a1e1cfc"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -110,6 +119,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""ThrowFruit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d471d23c-bf75-46c2-91db-4932bc30d5a5"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -133,6 +153,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_ThrowFruit = m_Player.FindAction("ThrowFruit", throwIfNotFound: true);
+        m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -197,6 +218,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_ThrowFruit;
+    private readonly InputAction m_Player_Jump;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -204,6 +226,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @ThrowFruit => m_Wrapper.m_Player_ThrowFruit;
+        public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -222,6 +245,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ThrowFruit.started += instance.OnThrowFruit;
             @ThrowFruit.performed += instance.OnThrowFruit;
             @ThrowFruit.canceled += instance.OnThrowFruit;
+            @Jump.started += instance.OnJump;
+            @Jump.performed += instance.OnJump;
+            @Jump.canceled += instance.OnJump;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -235,6 +261,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ThrowFruit.started -= instance.OnThrowFruit;
             @ThrowFruit.performed -= instance.OnThrowFruit;
             @ThrowFruit.canceled -= instance.OnThrowFruit;
+            @Jump.started -= instance.OnJump;
+            @Jump.performed -= instance.OnJump;
+            @Jump.canceled -= instance.OnJump;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -266,5 +295,6 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnShoot(InputAction.CallbackContext context);
         void OnThrowFruit(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

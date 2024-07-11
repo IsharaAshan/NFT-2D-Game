@@ -31,6 +31,8 @@ public class PlayerOnFoot : MonoBehaviour
 
 
     [SerializeField]short jumpValue;
+
+    bool canControl;
     public enum PlayerMode 
     {
         OnFoot,
@@ -40,7 +42,7 @@ public class PlayerOnFoot : MonoBehaviour
 
     public PlayerMode playerMode;
 
-
+    bool isCanJump;
     private void Awake()
     {
         control = new Controls();
@@ -52,10 +54,16 @@ public class PlayerOnFoot : MonoBehaviour
         control.Enable();
         control.Player.Shoot.performed += ctx => Shoot();
         control.Player.ThrowFruit.performed += ctx => ThrowFruit();  
+        control.Player.Jump.started += ctx => JumpProcess();  
 
     }
 
   
+    private void JumpProcess()
+    {
+        isCanJump = true;
+    }
+
     private void OnDisable()
     {
         control.Disable();
@@ -68,6 +76,7 @@ public class PlayerOnFoot : MonoBehaviour
         lifeValue = 3;
         levelController.UpdateLifeValue(lifeValue);
 
+        canControl = true;
 
         switch (playerMode) 
         {
@@ -93,41 +102,47 @@ public class PlayerOnFoot : MonoBehaviour
     private void Update()
     {
         // Check if the player is grounded
-    
-        switch (playerMode)
+        if (canControl)
         {
-            case PlayerMode.OnFoot:
-                isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-                if (animator != null)
-                {
-                    animator.SetFloat("Speed", canMove ? moveSpeed : 0);
-                    animator.SetBool("isJumping", !isGrounded);
-                }
+            switch (playerMode)
+            {
+                case PlayerMode.OnFoot:
+                    isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-                if (Input.GetButtonDown("Jump"))
-                {
-
-                    if (canMove && isGrounded)
+                    if (animator != null)
                     {
-                        jumpValue = 0;
-                        Jump();
-                        jumpValue++;
+                        animator.SetFloat("Speed", canMove ? moveSpeed : 0);
+                        animator.SetBool("isJumping", !isGrounded);
                     }
-                    else
+
+                    if (isCanJump)
                     {
-                        if (!isGrounded && jumpValue == 1)
+                        isCanJump = false;
+
+                        if (canMove && isGrounded)
                         {
-                            Jump();
                             jumpValue = 0;
+                            Jump();
+                            jumpValue++;
                         }
+                        else
+                        {
+                            if (!isGrounded && jumpValue == 1)
+                            {
+                                Jump();
+                                jumpValue = 0;
+                            }
+                        }
+
+                        Debug.Log(jumpValue);
                     }
-                }
 
 
-                ; break;
+                    ; break;
 
-           
+
+            }
         }
     }
 
@@ -150,18 +165,13 @@ public class PlayerOnFoot : MonoBehaviour
 
     private void Jump()
     {
-       
-
-        // Apply a vertical force to the player to make them jump
+    // Apply a vertical force to the player to make them jump
         if (playerMode == PlayerMode.OnFoot)
         {
 
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             GameManager.Instance.PlaySound("Jump");
         }
-
-
-
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -200,6 +210,7 @@ public class PlayerOnFoot : MonoBehaviour
         {
             levelController.LevelComplete();
             canMove = false;
+            canControl = false;
         }
     }
 
