@@ -9,14 +9,23 @@ public class PlayerOnFoot : MonoBehaviour
 
     public float moveSpeed = 5f; // Speed at which the player moves
     public float jumpForce = 10f; // Force applied when the player jumps
-    public Transform groundCheck; // Transform representing the ground check position
-    public float groundCheckRadius = 0.2f; // Radius of the ground check circle
-    public LayerMask groundLayer; // Layer mask for the ground
+
     public bool canMove;
 
     private Rigidbody2D rb;
-    private bool isGrounded;
-   Animator animator;
+    [SerializeField]private bool isGrounded;
+    public Transform groundCheck; // Transform representing the ground check position
+    public float groundCheckRadius = 0.2f; // Radius of the ground check circle
+    public LayerMask groundLayer; // Layer mask for the ground
+
+    bool isRightHit;
+    Vector2 boxSize = new Vector2(.1f, 1);
+    public Transform rightCheck;
+
+
+
+
+    Animator animator;
 
     LevelController levelController;
 
@@ -109,6 +118,13 @@ public class PlayerOnFoot : MonoBehaviour
             {
                 case PlayerMode.OnFoot:
                     isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+                    isRightHit = Physics2D.OverlapBox(rightCheck.position, boxSize, 0f, groundLayer);
+
+                    if (isRightHit) 
+                    {
+                        Debug.Log("RightHIt");
+                    }
 
                     if (animator != null)
                     {
@@ -214,8 +230,27 @@ public class PlayerOnFoot : MonoBehaviour
         }
     }
 
+   
 
-        public void HitAndDead()
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Statue")) 
+        {
+            if (isRightHit) 
+            {
+
+             
+                collision.gameObject.GetComponent<Collider2D>().isTrigger = true;
+
+                HitAndDead();
+            }
+
+          
+        }
+    }
+
+    public void HitAndDead()
     {
         if (isPowerOn)
         {
@@ -343,6 +378,9 @@ public class PlayerOnFoot : MonoBehaviour
         // Draw a sphere at the ground check position for debugging purposes
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(rightCheck.position, boxSize);
     }
 
 

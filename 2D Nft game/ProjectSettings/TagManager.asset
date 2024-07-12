@@ -12,6 +12,7 @@ TagManager:
   - FxTemporaire
   - Fruits
   - LevelEnd
+  - Statue
   layers:
   - Default
   - TransparentFX
