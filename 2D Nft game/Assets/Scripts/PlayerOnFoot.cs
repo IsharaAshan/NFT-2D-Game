@@ -19,7 +19,7 @@ public class PlayerOnFoot : MonoBehaviour
     public LayerMask groundLayer; // Layer mask for the ground
 
     bool isRightHit;
-    Vector2 boxSize = new Vector2(.1f, 1);
+    Vector2 boxSize = new Vector2(.1f, 1f);
     public Transform rightCheck;
 
 
