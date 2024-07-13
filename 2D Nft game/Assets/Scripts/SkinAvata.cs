@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SkinAvata : MonoBehaviour
 {
-    [SerializeField]PlayerOnFoot player;
+    [SerializeField]PlayerControl player;
     public void Throw() 
     {
         player.ThrwoConfigure();
@@ -13,5 +13,11 @@ public class SkinAvata : MonoBehaviour
     public void WalikingSound() 
     {
         GameManager.Instance.PlaySound("WalkSound");
+    }
+
+
+    public void ActiveBeeCatch() 
+    {
+        player.IsHitCheckBee();
     }
 }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9b0a84bd1d7c26a498190669c6fbe662
+guid: 6b36246a0f9b7f34eb5ae3553221fd40
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,7 +67,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 256
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 1
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ScreenButtons_0
+      name: JoyStick_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 18
-        width: 220
-        height: 220
+        x: 26
+        y: 151
+        width: 242
+        height: 242
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dd95f5c4441956c4b9d97156eb330290
-      internalID: -2080496540
+      spriteID: c7fba2758944d1143a54039ae449e9eb
+      internalID: 516123125
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: ScreenButtons_1
+      name: JoyStick_1
       rect:
         serializedVersion: 2
-        x: 276
-        y: 18
-        width: 220
-        height: 220
+        x: 106
+        y: 43
+        width: 82
+        height: 81
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,50 +152,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: dc9c33896bdc81648b04f5b0870d13a6
-      internalID: 1942317591
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ScreenButtons_2
-      rect:
-        serializedVersion: 2
-        x: 534
-        y: 18
-        width: 220
-        height: 220
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 176c3480a8059f546a5db1777af76f27
-      internalID: 1625135534
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: ScreenButtons_3
-      rect:
-        serializedVersion: 2
-        x: 782
-        y: 17
-        width: 220
-        height: 218
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3783c20ce374b8942be3e7d5e2e9b1d9
-      internalID: 714788501
+      spriteID: 5748c2c12d0826b47a3b726bf71009bf
+      internalID: -1672147041
       vertices: []
       indices: 
       edges: []
@@ -211,10 +169,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      ScreenButtons_0: -2080496540
-      ScreenButtons_1: 1942317591
-      ScreenButtons_2: 1625135534
-      ScreenButtons_3: 714788501
+      JoyStick_0: 516123125
+      JoyStick_1: -1672147041
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

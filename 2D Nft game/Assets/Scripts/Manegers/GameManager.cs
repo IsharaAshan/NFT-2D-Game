@@ -180,14 +180,17 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        // Code to end the game
-        Debug.Log("Game Ended");
+        SceneManager.LoadScene(0);
     }
 
     public void RestartGame()
     {
-        // Code to restart the game
-        Debug.Log("Game Restarted");
+        SceneManager.LoadScene(GetActiveScene());
+    }
+
+    public void LoadNextGame() 
+    {
+        SceneManager.LoadScene(GetActiveScene() + 1);
     }
 
     public void OpenSettingsPanel()

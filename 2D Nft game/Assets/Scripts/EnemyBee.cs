@@ -33,11 +33,26 @@ public class EnemyBee : MonoBehaviour
             gameObject.SetActive(false);
 
         }
+        else if(collision.CompareTag("Bullet"))
+        {
+            collision.gameObject.SetActive(false);
+            GetComponent<Collider2D>().enabled = false;
+            GameManager.Instance.PlaySound("BeeHit");
+            gameObject.SetActive(false);
+        }
 
         if (collision.CompareTag("Ground"))
         {
             gameObject.SetActive(false);
         }
+    }
+
+    public void Dead() 
+    {
+      
+        GetComponent<Collider2D>().enabled = false;
+        GameManager.Instance.PlaySound("BeeHit");
+        gameObject.SetActive(false);
     }
 
 }

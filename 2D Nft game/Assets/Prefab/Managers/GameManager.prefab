@@ -787,7 +787,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1580,8 +1580,8 @@ RectTransform:
   m_Father: {fileID: 6477769312045799351}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2912,6 +2912,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sounds:
+  - name: WalkSound
+    clip: {fileID: 8300000, guid: d949a77379c38754eb63915bbb3873a8, type: 3}
+    volume: 0.25
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
   - name: BeeHit
     clip: {fileID: 8300000, guid: 5a1818567574fc24cb6e821e779002df, type: 3}
     volume: 1
@@ -2936,8 +2944,32 @@ MonoBehaviour:
     isMusic: 0
     isSfx: 1
     source: {fileID: 0}
-  - name: FruitEat
-    clip: {fileID: 8300000, guid: ea70fcc3b882d3447a2e8830c7d2ece1, type: 3}
+  - name: EatFruit
+    clip: {fileID: 8300000, guid: e8eb28051c1e739489379bf72a821295, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: 435d089b191839e4aa246ae0800c23f5, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: Shoot
+    clip: {fileID: 8300000, guid: c5f9625471d05af42a6088297a17b9e3, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: FuelCollect
+    clip: {fileID: 8300000, guid: 4631f2321f08f1849a5b4b497500ebcf, type: 3}
     volume: 1
     pitch: 1
     loop: 0
@@ -3237,7 +3269,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -3393,8 +3425,8 @@ RectTransform:
   m_Father: {fileID: 6477769310979406164}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

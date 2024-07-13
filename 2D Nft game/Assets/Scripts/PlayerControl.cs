@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
-public class PlayerOnFoot : MonoBehaviour
+public class PlayerControl : MonoBehaviour
 {
     Controls control;
 
@@ -16,7 +17,7 @@ public class PlayerOnFoot : MonoBehaviour
     [SerializeField]private bool isGrounded;
     public Transform groundCheck; // Transform representing the ground check position
     public float groundCheckRadius = 0.2f; // Radius of the ground check circle
-    public LayerMask groundLayer; // Layer mask for the ground
+    public LayerMask groundLayer;// Layer mask for the ground
 
     bool isRightHit;
     Vector2 boxSize = new Vector2(.1f, 1f);
@@ -42,16 +43,23 @@ public class PlayerOnFoot : MonoBehaviour
     [SerializeField]short jumpValue;
 
     bool canControl;
-    public enum PlayerMode 
-    {
-        OnFoot,
-        OnPlane,
-        OnRocket
-    }
 
-    public PlayerMode playerMode;
+    float joystickMovementValue;
+  
 
     bool isCanJump;
+
+    [SerializeField] float maxY, minY;
+
+    [SerializeField] float fuelPowerUpTime;
+    bool isFuelPowerUp;
+
+
+    bool isCatchBee;
+    [SerializeField]float catchRadious = 2f;
+    [SerializeField]Transform catchPostion;
+    public LayerMask EnemyLayer;
+
     private void Awake()
     {
         control = new Controls();
@@ -61,13 +69,25 @@ public class PlayerOnFoot : MonoBehaviour
     private void OnEnable()
     {
         control.Enable();
+        control.Player.Joystick.performed += ctx => JoystickMove(ctx);
+        control.Player.Joystick.canceled += ctx => JoystickMoveCancel();
         control.Player.Shoot.performed += ctx => Shoot();
         control.Player.ThrowFruit.performed += ctx => ThrowFruit();  
         control.Player.Jump.started += ctx => JumpProcess();  
 
     }
 
-  
+    private void JoystickMoveCancel()
+    {
+      joystickMovementValue = 0;
+    }
+
+    private void JoystickMove(InputAction.CallbackContext context)
+    {
+        joystickMovementValue = context.ReadValue<float>();
+     
+    }
+
     private void JumpProcess()
     {
         isCanJump = true;
@@ -87,20 +107,21 @@ public class PlayerOnFoot : MonoBehaviour
 
         canControl = true;
 
-        switch (playerMode) 
+        switch (levelController.playerMode) 
         {
-                case PlayerMode.OnFoot:
+                case LevelController.PlayerMode.OnFoot:
                 rb.gravityScale = 1;
                 SkinActive(0);               
                 animator = activeSkin[0].GetComponent<Animator>();
                 ; break;
 
-                case PlayerMode.OnPlane: SkinActive(1);
+                case LevelController.PlayerMode.OnPlane: SkinActive(1);
                   rb.gravityScale = 0;
                 animator = activeSkin[1].GetComponent<Animator>();
                 ; break;
-                case PlayerMode.OnRocket: SkinActive(2);
-                  rb.gravityScale = 0;
+                case LevelController.PlayerMode.OnRocket: 
+                SkinActive(2);
+                rb.gravityScale = 0;
                 animator = activeSkin[2].GetComponent<Animator>();
                 ; break;
         }
@@ -114,9 +135,9 @@ public class PlayerOnFoot : MonoBehaviour
         if (canControl)
         {
 
-            switch (playerMode)
+            switch (levelController.playerMode)
             {
-                case PlayerMode.OnFoot:
+                case LevelController.PlayerMode.OnFoot:
                     isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
                     isRightHit = Physics2D.OverlapBox(rightCheck.position, boxSize, 0f, groundLayer);
@@ -157,6 +178,25 @@ public class PlayerOnFoot : MonoBehaviour
 
                     ; break;
 
+                case LevelController.PlayerMode.OnPlane:
+
+                    transform.Translate(new Vector2(0,joystickMovementValue)*moveSpeed * Time.deltaTime);
+
+                    if (transform.position.y >= maxY) { transform.position = new Vector2(transform.position.x, maxY); }
+                    else if (transform.position.y <= minY) { transform.position = new Vector2(transform.position.x, minY); }
+
+                    break;
+
+
+                case LevelController.PlayerMode.OnRocket:
+
+                    transform.Translate(new Vector2(0, joystickMovementValue) * moveSpeed * Time.deltaTime);
+
+                    if (transform.position.y >= maxY) { transform.position = new Vector2(transform.position.x, maxY); }
+                    else if (transform.position.y <= minY) { transform.position = new Vector2(transform.position.x, minY); }
+
+                    break;
+
 
             }
         }
@@ -182,7 +222,7 @@ public class PlayerOnFoot : MonoBehaviour
     private void Jump()
     {
     // Apply a vertical force to the player to make them jump
-        if (playerMode == PlayerMode.OnFoot)
+        if (levelController.playerMode == LevelController.PlayerMode.OnFoot)
         {
 
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -222,11 +262,22 @@ public class PlayerOnFoot : MonoBehaviour
             GameManager.Instance.PlaySound("EatFruit");
         }
 
-        else if (collision.CompareTag("LevelEnd")) 
+        else if (collision.CompareTag("LevelEnd"))
         {
-            levelController.LevelComplete();
-            canMove = false;
+            levelController.LevelComplete();  
             canControl = false;
+            canMove = false;
+            moveSpeed = 0;
+            rb.velocity = Vector2.zero;
+        }
+        else if (collision.CompareTag("FuelBarrel"))
+        {
+            collision.gameObject.SetActive(false);
+            moveSpeed = moveSpeed * 2;
+            GameManager.Instance.PlaySound("FuelCollect");
+            StartCoroutine(FuelBarrelDeactivePowerUp());
+            
+            
         }
     }
 
@@ -239,10 +290,8 @@ public class PlayerOnFoot : MonoBehaviour
         {
             if (isRightHit) 
             {
-
-             
+       
                 collision.gameObject.GetComponent<Collider2D>().isTrigger = true;
-
                 HitAndDead();
             }
 
@@ -308,8 +357,24 @@ public class PlayerOnFoot : MonoBehaviour
     private void Shoot()
     {
         // Implement shooting functionality here
-       
-        animator.SetTrigger("throw");
+
+
+        switch (levelController.playerMode)
+        {
+            case LevelController.PlayerMode.OnFoot:
+                animator.SetTrigger("throw");
+                ; break;
+
+            case LevelController.PlayerMode.OnPlane:
+                GameObject bullet = Pooler.Instance.GetPooledObject("Bullet");
+                 bullet.transform.position = launchPos.position ;
+                bullet.SetActive(true);
+
+                ; break;
+
+        }
+
+        GameManager.Instance.PlaySound("Shoot");
 
       
     }
@@ -348,6 +413,8 @@ public class PlayerOnFoot : MonoBehaviour
     {
         transform.GetChild(0).localScale = new Vector3(.23f, .23f, .23f);
         StartCoroutine(DeactiveMeetPowerUp());
+
+        isFuelPowerUp = true;
     }
 
     IEnumerator DeactiveMeetPowerUp() 
@@ -358,6 +425,14 @@ public class PlayerOnFoot : MonoBehaviour
         moveSpeed /= 2;
         isPowerOn = false;
         hitValue = 3;
+
+        isFuelPowerUp = false;
+    }
+
+    IEnumerator FuelBarrelDeactivePowerUp() 
+    {
+        yield return new WaitForSeconds(fuelPowerUpTime);
+        moveSpeed = 5;
     }
 
 
@@ -373,14 +448,18 @@ public class PlayerOnFoot : MonoBehaviour
     }
 
 
-    private void OnDrawGizmos()
+    public void IsHitCheckBee() 
     {
-        // Draw a sphere at the ground check position for debugging purposes
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        Collider2D  hit = Physics2D.OverlapCircle(catchPostion.position,catchRadious,EnemyLayer);
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(rightCheck.position, boxSize);
+        if (hit != null) 
+        {
+            if (hit.CompareTag("Bee")) 
+            {
+                hit.GetComponent<EnemyBee>().Dead();
+            }
+        }
+
     }
 
 
