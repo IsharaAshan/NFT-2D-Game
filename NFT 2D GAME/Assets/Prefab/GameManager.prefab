@@ -954,9 +954,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioManager: {fileID: 3846865056987610023}
   pausePanel: {fileID: 1173442060706665435}
-  OnMoveSpeedChange:
-    m_PersistentCalls:
-      m_Calls: []
   muteToggle: {fileID: 7842864114955311838}
   musicVolumeSlider: {fileID: 719614880025281179}
   sfxVolumeSlider: {fileID: 3945338745181316350}
@@ -1029,6 +1026,86 @@ MonoBehaviour:
     isMusic: 0
     isSfx: 1
     source: {fileID: 0}
+  - name: GameOver
+    clip: {fileID: 8300000, guid: 3f721bc3cc6e52b409ee6d7b195f0148, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: LevelComplete
+    clip: {fileID: 8300000, guid: 0b9b742f3c4dc094db50d7757d2d8669, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: eat
+    clip: {fileID: 8300000, guid: 3f721bc3cc6e52b409ee6d7b195f0148, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: laser
+    clip: {fileID: 8300000, guid: ee4350ad8e3f1d64d83b8dd80a19c4a5, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: fuel
+    clip: {fileID: 8300000, guid: 957318340f168c945a2fb825a2436a0d, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: teleportEnter
+    clip: {fileID: 8300000, guid: a0b506933a317a8449f9d5d7ddf434fa, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: teleportExit
+    clip: {fileID: 8300000, guid: 2df570be6d9348a4d91d86e692a60f7d, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: JetEngine
+    clip: {fileID: 8300000, guid: b5fca03af66842c4a8d1d59bb0202943, type: 3}
+    volume: 0.2
+    pitch: 1
+    loop: 1
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: planeEngine
+    clip: {fileID: 8300000, guid: f0ad5f3083479e840871640febd6832d, type: 3}
+    volume: 0.2
+    pitch: 1
+    loop: 1
+    isMusic: 0
+    isSfx: 1
+    source: {fileID: 0}
+  - name: BG
+    clip: {fileID: 8300000, guid: 11fd104a4c5a8af47a4f815fef9b477a, type: 3}
+    volume: 0.6
+    pitch: 1
+    loop: 1
+    isMusic: 1
+    isSfx: 0
+    source: {fileID: 0}
   masterVolume: 1
   musicVolume: 1
   sfxVolume: 1
@@ -1098,6 +1175,81 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -1600571272, guid: ccc7a0a042807724e9b1ea5f809cb575, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4277908985737318054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3746380244920836954}
+  - component: {fileID: 460571173302718302}
+  - component: {fileID: 7447030610241180576}
+  m_Layer: 5
+  m_Name: Image (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3746380244920836954
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4277908985737318054}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.2, y: 0.059986, z: 0.2}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 3509041428968509953}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -8.14}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &460571173302718302
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4277908985737318054}
+  m_CullTransparentMesh: 1
+--- !u!114 &7447030610241180576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4277908985737318054}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -440507830, guid: ccc7a0a042807724e9b1ea5f809cb575, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2089,9 +2241,10 @@ RectTransform:
   m_GameObject: {fileID: 8275629612414697669}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.5643725, y: 7.5643725, z: 7.5643725}
+  m_LocalScale: {x: 9.436554, y: 9.436554, z: 9.436554}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3746380244920836954}
   m_Father: {fileID: 6902630950571052991}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2121,7 +2274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2154,7 +2307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6902630950571052991
 RectTransform:
   m_ObjectHideFlags: 0

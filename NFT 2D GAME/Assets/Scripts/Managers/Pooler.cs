@@ -114,4 +114,12 @@ public class Pooler : MonoBehaviour
         Debug.LogWarning("Object with tag '" + objectTag + "' does not have a prefab assigned in the pooler!");
         return null;
     }
+
+    public void ActiVfx(string vfxName, Transform pos) 
+    { 
+        GameObject vfx = GetPooledObject(vfxName);  
+        vfx.transform.position = pos.position;
+        vfx.SetActive(true);
+        Debug.Log("Hurt Effect");
+    }
 }

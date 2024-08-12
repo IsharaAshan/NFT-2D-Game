@@ -1,23 +1,18 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // Static instance of GameManager which allows it to be accessed by any other script
     public static GameManager Instance { get; private set; }
 
-    [SerializeField]AudioManager audioManager;
-    // Awake is called when the script instance is being loaded
+    [SerializeField] AudioManager audioManager;
 
     public int MainLifeValue { get; set; }
     public int MainCoinValue { get; set; }
 
     [SerializeField] GameObject pausePanel;
-
-
-    public UnityEvent<float> OnMoveSpeedChange;
-
 
     public Toggle muteToggle;
     public Slider musicVolumeSlider;
@@ -25,53 +20,87 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        // Check if instance already exists and if it's not this, destroy the gameObject
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
         else
         {
-            // Make this the instance
             Instance = this;
-            // Make sure this instance persists across scenes
             DontDestroyOnLoad(gameObject);
         }
 
         MainLifeValue = 3;
 
+        MainCoinValue = PlayerPrefs.GetInt("maincoin", MainCoinValue); ;
+
         pausePanel?.SetActive(false);
     }
 
-   
-
-    public void MoveSpeedChange(float value) 
+    private void Start()
     {
-        OnMoveSpeedChange?.Invoke(value);
+        // Attach event listeners
+        muteToggle.onValueChanged.AddListener(OnMuteToggleChanged);
+        musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
+        sfxVolumeSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+
+        LoadSettings();
     }
 
-    public void PlaySfx(string clip) 
+    public void PlaySfx(string clip)
     {
-       audioManager.PlaySound(clip);
+        audioManager.PlaySound(clip);
     }
 
-    public void PausePanelOpen() 
+    public void PausePanelOpen()
     {
         pausePanel.SetActive(true);
         PlaySfx("click");
-        Time.timeScale  = 0;
+        Time.timeScale = 0;
     }
 
-    public void PausePanelClose() 
+    public void PausePanelClose()
     {
         pausePanel.SetActive(false);
         PlaySfx("click");
         Time.timeScale = 1;
     }
 
+    public int GetActiveScene()
+    {
+        return SceneManager.GetActiveScene().buildIndex;
+    }
 
-    #region//Audio Settings
-    // Callback for mute toggle
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(GetActiveScene());
+        PlaySfx("click");
+    }
+
+    public void LoadNextScene()
+    {
+        int maxScene = SceneManager.sceneCountInBuildSettings - 1;
+
+        if (GetActiveScene() >= maxScene)
+        {
+            HomeMenu();
+        }
+        else
+        {
+            SceneManager.LoadScene(GetActiveScene() + 1);
+        }
+
+        PlaySfx("click");
+    }
+
+    public void HomeMenu()
+    {
+        SceneManager.LoadScene(0);
+        PlaySfx("click");
+    }
+
+    #region // Audio Settings
+
     void OnMuteToggleChanged(bool isMuted)
     {
         if (audioManager != null)
@@ -88,7 +117,6 @@ public class GameManager : MonoBehaviour
         SaveSettings();
     }
 
-    // Callback for music volume slider
     void OnMusicVolumeChanged(float volume)
     {
         if (audioManager != null)
@@ -98,7 +126,6 @@ public class GameManager : MonoBehaviour
         SaveSettings();
     }
 
-    // Callback for SFX volume slider
     void OnSFXVolumeChanged(float volume)
     {
         if (audioManager != null)
@@ -108,60 +135,62 @@ public class GameManager : MonoBehaviour
         SaveSettings();
     }
 
-    // Save the audio settings
     public void SaveSettings()
     {
         PlayerPrefs.SetInt("Mute", muteToggle.isOn ? 1 : 0);
         PlayerPrefs.SetFloat("MusicVolume", musicVolumeSlider.value);
         PlayerPrefs.SetFloat("SFXVolume", sfxVolumeSlider.value);
         PlayerPrefs.Save();
-
     }
 
-    // Load the audio settings
     public void LoadSettings()
     {
-        // Load or set default mute setting
         if (PlayerPrefs.HasKey("Mute"))
         {
             muteToggle.isOn = PlayerPrefs.GetInt("Mute") == 1;
         }
         else
         {
-            muteToggle.isOn = false; // Default value for first time (unmuted)
+            muteToggle.isOn = false;
         }
 
-        // Load or set default music volume
         if (PlayerPrefs.HasKey("MusicVolume"))
         {
             musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume");
         }
         else
         {
-            musicVolumeSlider.value = 1f; // Default value for first time
+            musicVolumeSlider.value = 1f;
         }
 
-        // Load or set default SFX volume
         if (PlayerPrefs.HasKey("SFXVolume"))
         {
             sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume");
         }
         else
         {
-            sfxVolumeSlider.value = 1f; // Default value for first time
+            sfxVolumeSlider.value = 1f;
         }
 
-        // Apply loaded or default settings
         ApplySettings();
     }
 
-
-    // Apply settings to AudioManager
     void ApplySettings()
     {
-        OnMuteToggleChanged(muteToggle.isOn);
-        OnMusicVolumeChanged(musicVolumeSlider.value);
-        OnSFXVolumeChanged(sfxVolumeSlider.value);
+        if (audioManager != null)
+        {
+            audioManager.SetMusicVolume(musicVolumeSlider.value);
+            audioManager.SetSfxVolume(sfxVolumeSlider.value);
+
+            if (muteToggle.isOn)
+            {
+                audioManager.MuteAll();
+            }
+            else
+            {
+                audioManager.UnmuteAll();
+            }
+        }
     }
 
     public void PlayOverPlay(string soundName)

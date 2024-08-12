@@ -12,41 +12,26 @@ public class BackgroundMover : MonoBehaviour
 
     [SerializeField]private bool canMove;
 
-    private void OnEnable()
+    LevelManager levelManager;
+
+    private void Awake()
     {
-        PlayerControl.OnPlayerMove += OnMove; // Subscribe to the event
-       
+        levelManager = FindObjectOfType<LevelManager>();
     }
 
-    private void Start()
-    {
-        GameManager.Instance.OnMoveSpeedChange.AddListener(OnSpeedChange);
-    }
-
-    private void OnDisable()
-    {
-        PlayerControl.OnPlayerMove -= OnMove; // Unsubscribe from the event
-        GameManager.Instance.OnMoveSpeedChange.RemoveListener(OnSpeedChange);
-    }
-
-    private void OnMove(bool isMove) // Handler method matching the delegate signature
-    {
-        canMove = isMove;
-      
-    }
+ 
 
     private void Update()
     {
 
-        if (canMove)
-        {
-            transform.Translate(Vector3.left * moveSpeed * Time.deltaTime);
+        
+            transform.Translate(Vector3.left * levelManager.MainSpeed* Time.deltaTime);
 
             if (transform.position.x <= endPositionX)
             {
                 transform.position = new Vector2(startPositionX, transform.position.y);
             }
-        }
+        
     }
 
     private void OnSpeedChange(float value)

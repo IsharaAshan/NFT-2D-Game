@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BeeEnemy : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+
 
     Rigidbody2D rb;
     LevelManager levelManager;
@@ -13,6 +13,9 @@ public class BeeEnemy : MonoBehaviour
     [SerializeField] float startPostionX;
 
     [SerializeField]bool isBig;
+
+    [SerializeField]GameObject meat;
+    Vector2 startPos;
     private void Awake()
     {
        levelManager = FindObjectOfType<LevelManager>();
@@ -21,41 +24,37 @@ public class BeeEnemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         rb.isKinematic = true;
+        startPos = transform.position;
 
-        GameManager.Instance.OnMoveSpeedChange.AddListener(OnSpeedChange);
 
     }
-
-    private void OnDisable()
-    {
-        GameManager.Instance.OnMoveSpeedChange.AddListener(OnSpeedChange);
-    }
-
 
 
     private void Update()
     {
-        transform.Translate(Vector2.left * moveSpeed * Time.deltaTime);
+        float speed = levelManager.MainSpeed + 2;
+
+        transform.Translate(Vector2.left * speed* Time.deltaTime);
 
         if (transform.position.x <  endPostion) 
         {
-            transform.position = new Vector2(startPostionX, 0);
+            
+            transform.position = new Vector2(startPostionX, Random.Range(-2,2));
             ComponentEnable();
 
         }
-    }
 
-    private void OnSpeedChange(float value)
-    {
-        moveSpeed = value;
+       
     }
 
 
 
-    private void ComponentDisble()
+
+    public void ComponentDisble()
     {
+
         GetComponent<SpriteRenderer>().enabled = false;
-        GetComponent<Collider2D>().enabled = true;
+        GetComponent<Collider2D>().enabled = false;
     }
 
     private void ComponentEnable()
@@ -64,8 +63,29 @@ public class BeeEnemy : MonoBehaviour
         GetComponent<Collider2D>().enabled = true;
     }
 
+    private void DeadInstance() 
+    {
+        if (!levelManager.IsPlayerHasMeat) 
+        {
+            FindObjectOfType<ObjectsMover>().ActivePowerUpMeat(transform);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+
+        if (collision.CompareTag("Pbullet"))
+        {
+            collision.gameObject.SetActive(false);
+            GameManager.Instance.PlaySfx("hit");
+            levelManager.UpdateDeadBees();
+            ComponentDisble();
+            Pooler.Instance.ActiVfx("Hit", transform);
+
+        }
+      
+
+
         if (!isBig)
         {
 
@@ -75,7 +95,10 @@ public class BeeEnemy : MonoBehaviour
                 rb.isKinematic = false;
                 levelManager.UpdateDeadBees();
 
+                ComponentDisble();
                 GameManager.Instance.PlaySfx("hit");
+                DeadInstance();
+
             }
         }
         else 
@@ -86,20 +109,21 @@ public class BeeEnemy : MonoBehaviour
                 rb.isKinematic = false;
                 levelManager.UpdateDeadBees();
 
+                ComponentDisble();
                 GameManager.Instance.PlaySfx("hit");
+                DeadInstance();
             }
         }
 
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    public void AssignStartPostion()
     {
-        if (collision.CompareTag("Ground"))
-        {
-           
-            ComponentDisble();
-            rb.velocity = Vector2.zero;
-            rb.isKinematic = true;
-        }
+        transform.position = startPos;
     }
+
+
+
+
+  
 }

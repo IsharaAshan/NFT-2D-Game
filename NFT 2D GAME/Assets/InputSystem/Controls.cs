@@ -53,6 +53,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move"",
+                    ""type"": ""Value"",
+                    ""id"": ""de236b60-6412-433d-aaa4-e5dbe8e4b946"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Catch"",
+                    ""type"": ""Button"",
+                    ""id"": ""349d0917-6782-4fe2-9b68-5cc973f42023"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -88,6 +106,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Fruit"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d44094ba-6272-4aec-8409-06e52ae5b25b"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""40c2b8ac-3dc8-4c0b-b81e-e6436cb19138"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Catch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -99,6 +139,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Throw = m_Player.FindAction("Throw", throwIfNotFound: true);
         m_Player_Fruit = m_Player.FindAction("Fruit", throwIfNotFound: true);
+        m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
+        m_Player_Catch = m_Player.FindAction("Catch", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,6 +205,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Throw;
     private readonly InputAction m_Player_Fruit;
+    private readonly InputAction m_Player_Move;
+    private readonly InputAction m_Player_Catch;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -170,6 +214,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Throw => m_Wrapper.m_Player_Throw;
         public InputAction @Fruit => m_Wrapper.m_Player_Fruit;
+        public InputAction @Move => m_Wrapper.m_Player_Move;
+        public InputAction @Catch => m_Wrapper.m_Player_Catch;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -188,6 +234,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Fruit.started += instance.OnFruit;
             @Fruit.performed += instance.OnFruit;
             @Fruit.canceled += instance.OnFruit;
+            @Move.started += instance.OnMove;
+            @Move.performed += instance.OnMove;
+            @Move.canceled += instance.OnMove;
+            @Catch.started += instance.OnCatch;
+            @Catch.performed += instance.OnCatch;
+            @Catch.canceled += instance.OnCatch;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -201,6 +253,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Fruit.started -= instance.OnFruit;
             @Fruit.performed -= instance.OnFruit;
             @Fruit.canceled -= instance.OnFruit;
+            @Move.started -= instance.OnMove;
+            @Move.performed -= instance.OnMove;
+            @Move.canceled -= instance.OnMove;
+            @Catch.started -= instance.OnCatch;
+            @Catch.performed -= instance.OnCatch;
+            @Catch.canceled -= instance.OnCatch;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -223,5 +281,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
         void OnFruit(InputAction.CallbackContext context);
+        void OnMove(InputAction.CallbackContext context);
+        void OnCatch(InputAction.CallbackContext context);
     }
 }

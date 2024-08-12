@@ -11,6 +11,14 @@ TagManager:
   - coin
   - fruit
   - ThrowFruit
+  - DmgBlock
+  - Meat
+  - Pbullet
+  - Fuel
+  - BulletDestoy
+  - FxTemporaire
+  - catchPoint
+  - Portal
   layers:
   - Default
   - TransparentFX
@@ -19,7 +27,7 @@ TagManager:
   - Water
   - UI
   - GroundLayer
-  - 
+  - EnemyLayer
   - 
   - 
   - 

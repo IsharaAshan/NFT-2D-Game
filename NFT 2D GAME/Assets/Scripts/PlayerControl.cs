@@ -11,7 +11,7 @@ public class PlayerControl : MonoBehaviour
     Controls inputControls;
     GameManager gameManager;
     [SerializeField]LevelManager levelManager;
-    [SerializeField]Pooler pooler;
+    [SerializeField] PlayerKeepBounds keepBoundsSetUp; 
 
     //Components
     [SerializeField]Animator animator;
@@ -36,16 +36,24 @@ public class PlayerControl : MonoBehaviour
     [SerializeField]Transform throwHand;
     [SerializeField] Vector2 thorowForce;
 
-    //Delegate
-    public delegate void IsMove(bool isMove); // Delegate definition
-    public static event IsMove OnPlayerMove; // Event definition
-
-    bool isCanControl;
+    byte playerModeValue = 0;
+  
+    public bool isCanControl;
     bool isHitStatue;
-
     float defaultGravityScale;
+    bool isCanDamege;
+    bool isFuelPoweUp;
 
-   
+    //Level 2
+    [SerializeField]float bullertForce = 1;
+    [SerializeField]Transform shootPos;
+    private Vector2 moveInput;
+    [SerializeField]float flySpeed = 8;
+
+    //Level 3
+    [SerializeField] Transform catchPoint;
+    [SerializeField]LayerMask  enemyLayer;
+    [SerializeField]Vector2 catchBoxSize;
 
     private void Awake()
     {
@@ -59,64 +67,135 @@ public class PlayerControl : MonoBehaviour
         inputControls.Player.Jump.performed += OnJump; // Corrected event subscription for new Input System
         inputControls.Player.Throw.performed += OnThrow; // Corrected event subscription for new Input System
         inputControls.Player.Fruit.performed += OnFruitThrow; // Corrected event subscription for new Input System
+        inputControls.Player.Move.performed += ctx => OnJoystickMove(ctx);
+        inputControls.Player.Move.canceled += ctx => OnJoystickMove(ctx);
+        //inputControls.Player.Catch.performed += OnCatchThrow; // Corrected event subscription for new Input System
 
         levelManager.OnGameStop.AddListener(OnStopTriger);
     }
 
-    private void OnStopTriger()
-    {
-       
-        isCanControl = false;
-        rb.velocity = Vector2.zero;
-        transform.GetComponentInChildren<Collider2D>().isTrigger = false;
-        rb.gravityScale = defaultGravityScale;
-        animator.SetInteger("PlayerState", 0);
-    }
+   
 
     private void Start()
     {
         gameManager = GameManager.Instance;
 
+        foreach (GameObject p in playerSkins) 
+        {
+            p.SetActive(false);
+        }
+
         switch (levelManager.playerMode) 
         {
             case LevelManager.PlayerMode.Ground:
 
+                playerSkins[0].SetActive(true);
                 animator = playerSkins[0].GetComponent<Animator>();
                 rb.gravityScale = 3;
                 animator.SetInteger("PlayerState", 1);
+                playerModeValue = 0;
+
                 break;
 
             case LevelManager.PlayerMode.Sky:
 
+                playerSkins[1].SetActive(true);
                 animator = playerSkins[1].GetComponent<Animator>();
                 rb.gravityScale = 0;
+                playerModeValue = 1;
+                keepBoundsSetUp.SetUpAvatar(1);
 
                 break;
 
             case LevelManager.PlayerMode.Space:
 
+                playerSkins[2].SetActive(true);
                 animator = playerSkins[2].GetComponent<Animator>();
+               
                 rb.gravityScale = 0;
+                playerModeValue = 2;
+                keepBoundsSetUp.SetUpAvatar(2);
 
                 break;
         }
 
        
         defaultGravityScale = rb.gravityScale;
-        OnPlayerMove?.Invoke(true);
         isCanControl = true;
+        isCanDamege = true;
+
+
     }
 
     private void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        if (isGrounded)
+        if (isCanControl)
         {
-            isDoubleJump = false; // Reset double jump when grounded
-           
-        }
+            if (playerModeValue == 0)
+            {
+                isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
+                if (isGrounded)
+                {
+                    isDoubleJump = false; // Reset double jump when grounded
+
+                }
+            }
+            else if (playerModeValue == 1 || playerModeValue == 2)
+            {
+                // Use the moveInput vector to move your player
+                Vector3 move = new Vector3(moveInput.x, moveInput.y, 0f);
+
+                // Apply the movement to your player (e.g., transform position or rigidbody movement)
+                transform.position += move * Time.deltaTime * flySpeed;
+            }
+            if (playerModeValue == 2)
+            {
+                RaycastHit2D hit = Physics2D.BoxCast(catchPoint.position, catchBoxSize, 0, Vector2.right, 0.1f, enemyLayer);
+
+
+                if (hit.collider != null)
+                {
+                    hit.collider.gameObject.GetComponent<BeeEnemy>().ComponentDisble();
+                    levelManager.UpdateDeadBees();
+                    gameManager.PlaySfx("hit");
+                    Pooler.Instance.ActiVfx("Hit", hit.collider.gameObject.transform);
+                }
+
+            }
+
+        }
+    }
+
+  
+
+    private void OnJoystickMove(InputAction.CallbackContext context)
+    {
+        if (isCanControl)
+        {
+
+            if (playerModeValue == 1 || playerModeValue == 2)
+            {
+                // Read the move input from the joystick
+                moveInput = context.ReadValue<Vector2>();
+            }
+        }
+      
+    }
+
+    private void OnStopTriger()
+    {
+
+        isCanControl = false;
+        rb.velocity = Vector2.zero;
+        transform.GetComponentInChildren<Collider2D>().enabled = false;
+        rb.gravityScale = 0;
+
+        if (playerModeValue == 0)
+        {
+            animator.SetInteger("PlayerState", 0);
+        }
+        StopAllCoroutines();
     }
 
 
@@ -124,21 +203,24 @@ public class PlayerControl : MonoBehaviour
     {
         if (isCanControl)
         {
-
-            if (context.performed)
+            if (playerModeValue == 0)
             {
-                if (isGrounded || !isDoubleJump)
+
+                if (context.performed)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, jumpForce); // Apply jump force
-
-                    if (!isGrounded)
+                    if (isGrounded || !isDoubleJump)
                     {
-                        isDoubleJump = true; // Set double jump flag
+                        rb.velocity = new Vector2(rb.velocity.x, jumpForce); // Apply jump force
+
+                        if (!isGrounded)
+                        {
+                            isDoubleJump = true; // Set double jump flag
+                        }
+
+                        animator.SetTrigger("Jump");
+
+
                     }
-
-                    animator.SetTrigger("Jump");
-
-
                 }
             }
         }
@@ -146,13 +228,35 @@ public class PlayerControl : MonoBehaviour
 
     private void OnThrow(InputAction.CallbackContext context) 
     {
-        animator.SetTrigger("Throw");
-        GameObject mobilel = pooler.GetPooledObject("mobile");
-        mobilel.transform.position = throwHand.position; 
+        switch (playerModeValue)
+        {
+            case 0:
+                animator.SetTrigger("Throw");
+                GameObject mobilel = Pooler.Instance.GetPooledObject("mobile");
+                mobilel.transform.position = throwHand.position;
 
-        mobilel.SetActive(true);
-        Rigidbody2D mobileRb = mobilel.GetComponent<Rigidbody2D>(); 
-        mobileRb.velocity = thorowForce;
+                mobilel.SetActive(true);
+                Rigidbody2D mobileRb = mobilel.GetComponent<Rigidbody2D>();
+                mobileRb.velocity = thorowForce;
+                GameManager.Instance.PlaySfx("throw");
+
+            break;
+
+            case 1:
+                GameObject bullet = Pooler.Instance.GetPooledObject("PBullet");
+                bullet.transform.position = shootPos.position;
+
+                bullet.SetActive(true);
+                Rigidbody2D bulletRb = bullet.GetComponent<Rigidbody2D>();
+                bulletRb.AddForce(Vector2.right*bullertForce);
+                GameManager.Instance.PlaySfx("laser");
+
+                break;
+        }
+     
+
+
+    
 
     }
     private void OnFruitThrow(InputAction.CallbackContext context)
@@ -161,13 +265,15 @@ public class PlayerControl : MonoBehaviour
         {
             if (levelManager.fruiteValue > 0)
             {
-                GameObject fruit = pooler.GetPooledObject("fruit");
+                GameObject fruit = Pooler.Instance.GetPooledObject("fruit");
                 fruit.transform.position = throwHand.position;
 
                 fruit.SetActive(true);
                 Rigidbody2D fruitRb = fruit.GetComponent<Rigidbody2D>();
                 fruitRb.velocity = thorowForce;
                 levelManager.UpdateFruitValue(false);
+                GameManager.Instance.PlaySfx("throw");
+               
             }
         }
 
@@ -175,12 +281,12 @@ public class PlayerControl : MonoBehaviour
 
     private void Hurt() 
     {
-        isCanControl  = false;
-        rb.gravityScale = 0;
-        animator.SetTrigger("Hurt");
-        OnPlayerMove?.Invoke(false);
-        levelManager.LifeDiscrease();
-       
+        if (isCanDamege)
+        {
+            levelManager.LifeDiscrease();
+            Pooler.Instance.ActiVfx("Hit",transform);
+            
+        }
     }
 
     public void Relife() 
@@ -189,7 +295,7 @@ public class PlayerControl : MonoBehaviour
         {
             rb.gravityScale = defaultGravityScale;
         }
-        OnPlayerMove?.Invoke(true);
+     
         isCanControl = true;
     }
 
@@ -205,12 +311,9 @@ public class PlayerControl : MonoBehaviour
 
         if (collision.gameObject.CompareTag("statue"))
         {
-            rb.gravityScale = 0;
-            OnPlayerMove?.Invoke(false);
+
             animator.SetTrigger("Hurt");
              isHitStatue = true;
-                GetComponentInChildren<Collider2D>().isTrigger = true;
-            
             isCanControl =false;
         }
     }
@@ -222,26 +325,69 @@ public class PlayerControl : MonoBehaviour
 
             if (collision.CompareTag("Bee"))
             {
-                levelManager.LifeDiscrease();
                 gameManager.PlaySfx("hit");
+                if (isFuelPoweUp)
+                {
+                    collision.GetComponent<BeeEnemy>().ComponentDisble();
+                    levelManager.UpdateDeadBees();
+                    Pooler.Instance.ActiVfx("Hit", collision.gameObject.transform);
+                }
                 Hurt();
 
             }
 
             else if (collision.CompareTag("coin"))
             {
-                collision.GetComponent<Coin>().Deactive();
-                gameManager.PlaySfx("coin");              
+                collision.GetComponent<ObjectsReset>().Deactive();
+                gameManager.PlaySfx("coin");
                 levelManager.UpdateCoinValue();
             }
 
 
             else if (collision.CompareTag("fruit"))
             {
-                collision.GetComponent<FruitMove>().Deactive();
+                collision.GetComponent<ObjectsReset>().Deactive();
                 gameManager.PlaySfx("fruit");
-
                 levelManager.UpdateFruitValue(true);
+            }
+
+            else if (collision.CompareTag("Meat"))
+            {
+                collision.GetComponent<ObjectsReset>().Deactive();
+                GameManager.Instance.PlaySfx("eat");
+                levelManager.IsPlayerHasMeat = true;
+                transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
+                StartCoroutine(DisbleMeatPowerUp());
+                levelManager.MainSpeed = 7f;
+                isCanDamege = false;
+            }
+
+            else if (collision.CompareTag("DmgBlock"))
+            {
+                gameManager.PlaySfx("hit");
+                Hurt();
+            }
+
+            else if (collision.CompareTag("Fuel"))
+            {
+                if (!isFuelPoweUp)
+                {
+
+                    gameManager.PlaySfx("fuel");
+                    isFuelPoweUp = true;
+                    collision.GetComponent<FuelBarel>().ResetFuel();
+                    isCanDamege = false;
+                    levelManager.MainSpeed = 8;
+                    StartCoroutine(DisbleFuelPowerUp());
+                }
+            }
+
+            else if (collision.CompareTag("Portal")) 
+            {
+                Debug.Log("Portal");
+                collision.transform.parent.GetComponent<Portal>().PortalReset();
+                levelManager.TeleportCheck();
+              
             }
 
         }
@@ -253,7 +399,6 @@ public class PlayerControl : MonoBehaviour
             if (isHitStatue) 
             {
                 isHitStatue = false;
-                GetComponentInChildren<Collider2D>().isTrigger = false;
                 rb.gravityScale = defaultGravityScale;
             }
 
@@ -274,6 +419,27 @@ public class PlayerControl : MonoBehaviour
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            Gizmos.DrawWireCube(catchPoint.position, catchBoxSize);
         }
+    }
+
+
+    IEnumerator DisbleMeatPowerUp() 
+    {
+        yield return new WaitForSeconds(10);
+        transform.localScale = new Vector3(1, 1, 1);
+        levelManager.IsPlayerHasMeat = false;
+        levelManager.MainSpeed = 5f;
+        isCanDamege = true;
+
+    }
+
+    IEnumerator DisbleFuelPowerUp() 
+    {
+        yield return new WaitForSeconds(10);
+        levelManager.MainSpeed = 5f;
+        isCanDamege = true;
+        isFuelPoweUp = false;
+
     }
 }

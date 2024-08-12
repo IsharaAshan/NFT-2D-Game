@@ -20,12 +20,17 @@ public class Avtar1 : MonoBehaviour
 
     public void Throw() 
     {
-        GameManager.Instance.PlaySfx("throw");
+       
     }
 
     public void DamegeOver() 
     {
         playerControl.Relife();
        
+    }
+
+    public void RocketCatch() 
+    {
+       // Debug.Log("Catch");
     }
 }
