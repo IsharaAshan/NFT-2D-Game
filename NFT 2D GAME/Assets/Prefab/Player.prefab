@@ -777,10 +777,15 @@ MonoBehaviour:
     m_Bits: 64
   throwHand: {fileID: 623070776372825827}
   thorowForce: {x: 6, y: 5}
+  isCanControl: 0
   bullertForce: 1000
   shootPos: {fileID: 5491031425055740533}
   flySpeed: 8
   catchPoint: {fileID: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  catchBoxSize: {x: 0, y: 0}
 --- !u!50 &7732935686687757840
 Rigidbody2D:
   serializedVersion: 4

@@ -120,6 +120,6 @@ public class Pooler : MonoBehaviour
         GameObject vfx = GetPooledObject(vfxName);  
         vfx.transform.position = pos.position;
         vfx.SetActive(true);
-        Debug.Log("Hurt Effect");
+      
     }
 }

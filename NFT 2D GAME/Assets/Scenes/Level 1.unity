@@ -6998,6 +6998,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c14995f14356d14bae41eb83592fc03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   playerMode: 0
   targetCoinValue: 100
   targetBeeValue: 100
@@ -7010,7 +7011,9 @@ MonoBehaviour:
   fruiteValue: 0
   fruiteDisplay: {fileID: 1092328511}
   levelValueDisplay: {fileID: 1498022154}
-  endCoinValue: {fileID: 379695606}
+  endCoinValue:
+  - {fileID: 379695606}
+  - {fileID: 949614427}
   levelCompletePanel: {fileID: 1747037012}
   gameOverPanel: {fileID: 353032095}
   OnGameStop:
@@ -7024,6 +7027,9 @@ MonoBehaviour:
   - {fileID: 1451572405}
   - {fileID: 1321636210}
   level2Sky: {fileID: 0}
+  exitPortal: {fileID: 0}
+  objectPack: {fileID: 0}
+  teleportMode: 0
 --- !u!1 &871292537
 GameObject:
   m_ObjectHideFlags: 0
@@ -7597,6 +7603,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5372801374755536904, guid: fab256aec09e722499ca399337bab304, type: 3}
   m_PrefabInstance: {fileID: 945188543}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &949614427 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3926518555560482413, guid: 854de318852081045b10c67016e8bee5, type: 3}
+  m_PrefabInstance: {fileID: 7113817037999647366}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &957464771
 GameObject:
   m_ObjectHideFlags: 0
@@ -17399,10 +17416,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2709400304345179696, guid: f30ebdac73e25fe4293d53caed30a555, type: 3}
-      propertyPath: pooler
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2709400304345179696, guid: f30ebdac73e25fe4293d53caed30a555, type: 3}
       propertyPath: levelManager
       value: 
       objectReference: {fileID: 866228319}
@@ -17677,26 +17690,14 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 866228319}
-    - target: {fileID: 5822289779376422238, guid: 854de318852081045b10c67016e8bee5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 134.75446
-      objectReference: {fileID: 0}
     - target: {fileID: 7163979940479685759, guid: 854de318852081045b10c67016e8bee5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 866228319}
-    - target: {fileID: 8188931694243663935, guid: 854de318852081045b10c67016e8bee5, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8606518360273271333, guid: 854de318852081045b10c67016e8bee5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 866228319}
-    - target: {fileID: 8643809935028614090, guid: 854de318852081045b10c67016e8bee5, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 660.5879
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -17939,7 +17940,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1029393291}
-  - {fileID: 7113817037999647366}
   - {fileID: 1188981779}
   - {fileID: 941094368}
   - {fileID: 866228318}
@@ -17955,3 +17955,4 @@ SceneRoots:
   - {fileID: 964773781}
   - {fileID: 1473885310}
   - {fileID: 273007100}
+  - {fileID: 7113817037999647366}

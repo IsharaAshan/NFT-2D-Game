@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
 
         MainLifeValue = 3;
 
+       // PlayerPrefs.DeleteAll();
+
         MainCoinValue = PlayerPrefs.GetInt("maincoin", MainCoinValue); ;
 
         pausePanel?.SetActive(false);
@@ -46,6 +48,39 @@ public class GameManager : MonoBehaviour
 
         LoadSettings();
     }
+
+
+    public void UpdateCoinValue(int value) 
+    {
+       
+        PlayerPrefs.SetInt("maincoin",value); 
+    }
+
+    public void AddCoins(int value) 
+    {
+        MainCoinValue += value;
+
+        UpdateCoinValue(MainCoinValue);
+    }
+
+    public void RemoveCoins(int value) 
+    {
+        if (value >= MainCoinValue) { MainCoinValue -= value; }
+        else 
+        {
+            Debug.Log("Not enough coins");
+        }
+
+        if (MainCoinValue < 0) 
+        {
+            MainCoinValue = 0;
+        }
+
+
+        UpdateCoinValue(MainCoinValue);
+    }
+
+    #region //Audio
 
     public void PlaySfx(string clip)
     {
@@ -99,7 +134,7 @@ public class GameManager : MonoBehaviour
         PlaySfx("click");
     }
 
-    #region // Audio Settings
+
 
     void OnMuteToggleChanged(bool isMuted)
     {
@@ -202,6 +237,10 @@ public class GameManager : MonoBehaviour
     {
         audioManager.StopSound(soundName);
     }
+
+    #endregion
+
+    #region Shop Values Change
 
     #endregion
 }

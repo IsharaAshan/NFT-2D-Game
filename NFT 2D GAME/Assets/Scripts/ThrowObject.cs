@@ -4,6 +4,19 @@ using UnityEngine;
 
 public class ThrowObject : MonoBehaviour
 {
+    [SerializeField] bool isMobile;
+
+    private void Start()
+    {
+
+        if (isMobile) 
+        {
+
+        }
+    }
+
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Ground")) 

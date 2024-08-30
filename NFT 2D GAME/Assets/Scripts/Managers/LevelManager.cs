@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] TMP_Text fruiteDisplay;
 
     [SerializeField] TMP_Text levelValueDisplay;
-    [SerializeField] TMP_Text endCoinValue;
+    [SerializeField] TMP_Text[] endCoinValue;
 
     byte tempBeeValue =0;
 
@@ -37,7 +37,6 @@ public class LevelManager : MonoBehaviour
 
     //Level 1
     public bool IsPlayerHasMeat { get; set; }
-
     public float MainSpeed { get; set; } = 5; 
 
     public UnityEvent OnGameStop;
@@ -69,7 +68,10 @@ public class LevelManager : MonoBehaviour
 
 
         lifeValue = gameManager.MainLifeValue;
-        coinValueDisplay.text = gameManager.MainCoinValue.ToString();
+
+        coinValue = gameManager.MainCoinValue;
+
+        coinValueDisplay.text =coinValue.ToString();
         deadValueDisplay.text = deadBeeValue.ToString();    
         fruiteDisplay.text = fruiteValue.ToString();
         levelValueDisplay.text = $"Level {gameManager.GetActiveScene()}";
@@ -155,6 +157,7 @@ public class LevelManager : MonoBehaviour
     {
         coinValue++;
         coinValueDisplay.text = coinValue.ToString();
+        GameManager.Instance.UpdateCoinValue(coinValue);
         LevelWinCheck();
     }
 
@@ -287,7 +290,13 @@ public class LevelManager : MonoBehaviour
         if (deadBeeValue >= targetBeeValue && coinValue >= targetCoinValue) 
         {
             MoveSpeedChange(0); 
-            endCoinValue.text = $"{coinValue}";
+            
+            foreach (var tmpText in endCoinValue) 
+            {
+                tmpText.text =  $"{coinValue}";
+            }
+
+
             gameManager.PlaySfx("LevelComplete");
             levelCompletePanel.SetActive(true);
             OnGameStop?.Invoke();
@@ -295,7 +304,7 @@ public class LevelManager : MonoBehaviour
             gameManager.StopSound("JetEngine");
             gameManager.StopSound("planeEngine");
             gameManager.MainCoinValue += coinValue;
-            PlayerPrefs.SetInt("maincoin", gameManager.MainCoinValue);
+           
         }
     }
 
@@ -303,7 +312,12 @@ public class LevelManager : MonoBehaviour
     {
         OnGameStop?.Invoke();
         MoveSpeedChange(0);
-       
+
+        foreach (var tmpText in endCoinValue)
+        {
+            tmpText.text = $"{coinValue}";
+        }
+
         gameManager.PlaySfx("GameOver");
         gameManager.StopSound("JetEngine");
         gameManager.StopSound("planeEngine");
